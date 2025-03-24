@@ -1,0 +1,15 @@
+services:
+ postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${DB_USER:-chat_go}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+      POSTGRES_DB: ${DB_NAME:-chat_go}
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+networks:
+  postgres:
+    driver: bridge

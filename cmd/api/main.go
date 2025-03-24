@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gabehamasaki/chat-go/internal/config"
 	"github.com/gabehamasaki/chat-go/internal/handler"
 	"github.com/gabehamasaki/chat-go/internal/logger"
 	"github.com/gabehamasaki/chat-go/internal/routes"
@@ -51,7 +52,7 @@ func server(lc fx.Lifecycle, logger *zap.Logger, router *routes.Router) *gin.Eng
 
 func main() {
 	app := fx.New(
-		fx.Provide(logger.NewLogger, handler.NewHandler, routes.NewRouter, server),
+		fx.Provide(logger.NewLogger, config.NewConfig, handler.NewHandler, routes.NewRouter, server),
 		fx.Invoke(func(*gin.Engine) {}),
 	)
 
