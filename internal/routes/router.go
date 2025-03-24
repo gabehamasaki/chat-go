@@ -18,9 +18,9 @@ func NewRouter(logger *zap.Logger, handler *handler.Handler, config *config.Conf
 }
 
 func (r *Router) Setup(engine *gin.Engine) {
-	r.logger.Info("Config", zap.Any("config", r.config))
 	api := engine.Group("/api")
 	{
+		api.GET("/chats", r.handler.ListChats)
 		api.GET("/healthy", r.handler.Healthy)
 	}
 }

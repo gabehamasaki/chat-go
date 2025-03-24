@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"net/http"
 	"time"
 
 	"github.com/gabehamasaki/chat-go/internal/config"
+	"github.com/gabehamasaki/chat-go/internal/database"
 	"github.com/gabehamasaki/chat-go/internal/handler"
 	"github.com/gabehamasaki/chat-go/internal/logger"
 	"github.com/gabehamasaki/chat-go/internal/routes"
@@ -16,7 +18,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func server(lc fx.Lifecycle, logger *zap.Logger, router *routes.Router) *gin.Engine {
+func server(lc fx.Lifecycle, logger *zap.Logger, router *routes.Router, cfg *config.Config) *gin.Engine {
 	gin.SetMode("release")
 	r := gin.New()
 
@@ -26,7 +28,7 @@ func server(lc fx.Lifecycle, logger *zap.Logger, router *routes.Router) *gin.Eng
 	logger.Info("Setup router...")
 	router.Setup(r)
 
-	srv := &http.Server{Addr: ":8080", Handler: r}
+	srv := &http.Server{Addr: fmt.Sprintf(":%s", cfg.PORT), Handler: r}
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -52,7 +54,7 @@ func server(lc fx.Lifecycle, logger *zap.Logger, router *routes.Router) *gin.Eng
 
 func main() {
 	app := fx.New(
-		fx.Provide(logger.NewLogger, config.NewConfig, handler.NewHandler, routes.NewRouter, server),
+		fx.Provide(config.NewConfig, logger.NewLogger, database.NewDatabase, handler.NewHandler, routes.NewRouter, server),
 		fx.Invoke(func(*gin.Engine) {}),
 	)
 

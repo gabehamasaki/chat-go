@@ -15,8 +15,10 @@ type DatabaseConfig struct {
 }
 
 type Config struct {
-	Env string
-	DB  *DatabaseConfig
+	NAME string
+	PORT string
+	Env  string
+	DB   *DatabaseConfig
 }
 
 func NewConfig() *Config {
@@ -25,6 +27,8 @@ func NewConfig() *Config {
 }
 
 func (c *Config) load() *Config {
+	c.NAME = c.GetEnv("APP_NAME", "chat_go")
+	c.PORT = c.GetEnv("PORT", "8080")
 	c.Env = c.GetEnv("ENV", "development")
 
 	c.DB = &DatabaseConfig{
